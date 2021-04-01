@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7f27478e-56e3-4f06-8933-92739ea9d548" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="c5768a72-0d1c-4a01-8158-b539ee27b536" >
+		<db:mssql-connection host="localhost" port="1433" user="MuleUser" password="Password" databaseName="country" />
+	</db:config>
+	<flow name="bulkdeleteFlow" doc:id="2a285c57-fa60-4e0e-8e8d-d5ce303ae165" >
+		<http:listener doc:name="Listener" doc:id="16c3367e-2855-4bef-af32-cddacb7dce94" config-ref="HTTP_Listener_config" path="/delete" allowedMethods="DELETE"/>
+		<ee:transform doc:name="Transform Message" doc:id="5dd839c3-f3ac-4f6e-bd85-de8b3774773a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	wereda: payload01.wereda
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-delete doc:name="Bulk delete" doc:id="e6b30cf5-984b-4339-ada1-0fbc6bc1c2d7" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete tigray where wereda=:wereda]]></db:sql>
+		</db:bulk-delete>
+		<ee:transform doc:name="Transform Message" doc:id="f7e86f89-e649-4a6d-89d0-3e379d028977" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

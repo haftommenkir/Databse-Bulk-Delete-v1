@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="delete" format="json">
+      <types:shape format="weave" example="examples/tig.json"><![CDATA[%dw 2.0
+
+type delete = Array<{|  id: String,   region: String,   wereda: String,   kebelle: String,   Totalpopulation: String|}> {"example": "[{\\\"id\\\":\\\"107\\\",\\\"region\\\":\\\"North\\\",\\\"wereda\\\":\\\"Adwa\\\",\\\"kebelle\\\":\\\"04_Keb\\\",\\\"Totalpopulation\\\":\\\"25000\\\"},{\\\"id\\\":\\\"108\\\",\\\"region\\\":\\\"West\\\",\\\"wereda\\\":\\\"Humera\\\",\\\"kebelle\\\":\\\"02_Keb\\\",\\\"Totalpopulation\\\":\\\"85000\\\"},{\\\"id\\\":\\\"109\\\",\\\"region\\\":\\\"South\\\",\\\"wereda\\\":\\\"Alamata\\\",\\\"kebelle\\\":\\\"02_Keb\\\",\\\"Totalpopulation\\\":\\\"55000\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#5dd839c3-f3ac-4f6e-bd85-de8b3774773a">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="delete"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
